@@ -1,6 +1,7 @@
+use crate::data_layer::request;
 use crate::models::{response::feed::Feed, video_entry::VideoEntry};
 
-pub fn create_video_entries(feed: Feed) -> Vec<VideoEntry> {
+fn create_video_entries(feed: Feed) -> Vec<VideoEntry> {
     feed.entry
         .iter()
         .map(|entry| {
@@ -23,4 +24,13 @@ pub fn create_video_entries(feed: Feed) -> Vec<VideoEntry> {
             }
         })
         .collect()
+}
+
+pub async fn video_entries_wrapper(
+    channel_id: String,
+) -> Result<Vec<VideoEntry>, Box<dyn std::error::Error>> {
+    let feed: Feed = request::request_xml(channel_id).await?;
+    let video_entries: Vec<VideoEntry> = create_video_entries(feed);
+
+    Ok(video_entries)
 }
