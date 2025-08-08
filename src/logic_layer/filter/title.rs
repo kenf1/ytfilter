@@ -1,8 +1,8 @@
 use crate::models::video_entry::VideoEntry;
 
 //todo: avoid clone
-pub fn filter_by_title<'a>(
-    entries: &'a [VideoEntry],
+pub fn filter_by_title(
+    entries: &[VideoEntry],
     queries: &[String],
 ) -> Vec<VideoEntry> {
     entries
