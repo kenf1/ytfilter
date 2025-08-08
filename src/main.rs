@@ -1,28 +1,22 @@
-use quick_xml::de::from_str;
-
+mod configs;
+mod data;
 mod models;
+
+use crate::data::request;
 use crate::models::feed::Feed;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    //todo: read from env/another file
-    let channel_id = "UC9ckyA_A3MfXUa0ttxMoIZw";
-
-    //todo: separate
-    let url = format!(
-        "https://www.youtube.com/feeds/videos.xml?channel_id={channel_id}",
-    );
-
-    let xml_data = reqwest::get(&url).await?.text().await?;
-
-    let feed: Feed = from_str(&xml_data)?;
+    //todo: read channel id from env/another file
+    let feed: Feed = request::request_xml("UC9ckyA_A3MfXUa0ttxMoIZw").await?;
 
     //todo: save as struct
     for entry in &feed.entry {
         println!("videoId: {}", entry.video_id);
         println!("published: {}", entry.published);
         println!("updated: {}", entry.updated);
-        let group = &entry.media_group;
+
+        let group: &models::media::group::MediaGroup = &entry.media_group;
         println!("media:title: {}", group.title);
         println!("media:content url: {}", group.content.url);
         println!("media:description: {}", group.description);
