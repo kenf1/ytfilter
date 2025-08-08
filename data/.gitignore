@@ -1,1 +1,2 @@
 *.json
+!channels_example.json
