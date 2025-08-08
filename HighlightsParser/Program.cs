@@ -1,4 +1,5 @@
-﻿using System.Xml.Linq;
+﻿using System.Text.Json;
+using System.Xml.Linq;
 
 class Program
 {
@@ -16,7 +17,20 @@ class Program
 
             if (Contents.CheckEntryEmpty(entry) == true)
             {
-                Contents.DisplayEntryDetails(entry, ns);
+                EntryInfo entryData = Contents.GetEntryData(entry, ns);
+
+                var jsonOptions = new JsonSerializerOptions
+                {
+                    WriteIndented = true,
+                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+                };
+
+                string jsonString = JsonSerializer.Serialize(entryData, jsonOptions);
+
+                Console.WriteLine(jsonString);
+
+                //save to file
+                System.IO.File.WriteAllText("../data/entry.json", jsonString);
             }
         }
         catch (HttpRequestException e)
