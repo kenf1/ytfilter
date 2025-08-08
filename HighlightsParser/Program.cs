@@ -1,38 +1,17 @@
-﻿using System.Xml.Linq;
-
-class Program
+﻿class Program
 {
     static async Task Main()
     {
-        string url = "https://www.youtube.com/feeds/videos.xml?channel_id=UC9ckyA_A3MfXUa0ttxMoIZw";
+        ImportEnv.Load(".env");
 
-        try
+        string? url = ImportEnv.GetValue("WTT");
+        if (url != null)
         {
-            string xmlContent = await Request.FetchXmlAsync(url);
-            XDocument doc = Request.ParseXml(xmlContent);
-
-            var ns = XmlNamespaces.GetNamespaces();
-            IEnumerable<XElement> entries = Contents.GetAllEntries(doc, ns.atom);
-
-            if (!entries.Any())
-            {
-                Console.WriteLine("No entries found in XML.");
-                return;
-            }
-
-            var entryDataList = Contents.ExtractEntryDataList(entries, ns);
-
-            JsonHelper.SaveListToJsonFile(entryDataList, "../data/entries.json");
+            await EntryParseWrapper.Run(url);
         }
-        catch (HttpRequestException e)
+        else
         {
-            Console.WriteLine("Error fetching XML: " + e.Message);
-            Environment.Exit(1);
-        }
-        catch (System.Xml.XmlException e)
-        {
-            Console.WriteLine("Error parsing XML: " + e.Message);
-            Environment.Exit(1);
+            Console.WriteLine("Url is null");
         }
     }
 }

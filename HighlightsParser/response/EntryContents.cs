@@ -1,30 +1,7 @@
 using System.Xml.Linq;
 
-class Contents
+class EntryContents
 {
-    public static XElement? GetFirstEntry(XDocument doc, XNamespace atomNamespace)
-    {
-        return doc.Root?.Element(atomNamespace + "entry");
-    }
-
-    public static IEnumerable<XElement> GetAllEntries(XDocument doc, XNamespace atomNamespace)
-    {
-        return doc.Root?.Elements(atomNamespace + "entry") ?? Enumerable.Empty<XElement>();
-    }
-
-    public static bool CheckEntryEmpty(XElement? entry)
-    {
-        if (entry != null)
-        {
-            return true;
-        }
-        else
-        {
-            Console.WriteLine("No entries found in XML.");
-            return false;
-        }
-    }
-
     public static EntryInfo GetEntryData(XElement entry, (XNamespace atom, XNamespace media) ns)
     {
         var entryInfo = new EntryInfo
@@ -88,10 +65,10 @@ class Contents
 
         foreach (var entry in entries)
         {
-            if (!Contents.CheckEntryEmpty(entry))
+            if (!EntryField.CheckEntryEmpty(entry))
                 continue;
 
-            EntryInfo entryData = Contents.GetEntryData(entry, ns);
+            EntryInfo entryData = GetEntryData(entry, ns);
             entryDataList.Add(entryData);
         }
 

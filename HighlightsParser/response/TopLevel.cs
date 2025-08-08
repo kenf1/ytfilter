@@ -1,7 +1,12 @@
 using System.Xml.Linq;
 
-class XmlNamespaces
+class TopLevelResponse
 {
+    public static XDocument ParseXml(string xmlContent)
+    {
+        return XDocument.Parse(xmlContent);
+    }
+
     public static (XNamespace atom, XNamespace media) GetNamespaces()
     {
         return (
