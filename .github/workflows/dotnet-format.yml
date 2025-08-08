@@ -1,0 +1,39 @@
+name: .NET format
+
+on:
+  workflow_dispatch:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  dotnet-format:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 9.0.x
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Format
+        run: dotnet format --verbosity diagnostic
+
+      - name: Commit formatted
+        run: |
+          git config --local user.email "github-actions[bot]"
+          git config --local user.name "github-actions[bot]"
+          git add .
+
+          if ! git diff --cached --quiet; then
+            git commit -m "chore: dotnet format"
+            git push -u origin main
+          else
+            echo "No changes to commit"
+          fi
