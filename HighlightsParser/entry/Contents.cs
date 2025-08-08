@@ -2,10 +2,14 @@ using System.Xml.Linq;
 
 class Contents
 {
-    //todo: get all entries
     public static XElement? GetFirstEntry(XDocument doc, XNamespace atomNamespace)
     {
         return doc.Root?.Element(atomNamespace + "entry");
+    }
+
+    public static IEnumerable<XElement> GetAllEntries(XDocument doc, XNamespace atomNamespace)
+    {
+        return doc.Root?.Elements(atomNamespace + "entry") ?? Enumerable.Empty<XElement>();
     }
 
     public static bool CheckEntryEmpty(XElement? entry)

@@ -13,11 +13,24 @@ class Program
             XDocument doc = Request.ParseXml(xmlContent);
 
             var ns = XmlNamespaces.GetNamespaces();
-            XElement entry = Contents.GetFirstEntry(doc, ns.atom)!;
+            IEnumerable<XElement> entries = Contents.GetAllEntries(doc, ns.atom);
 
-            if (Contents.CheckEntryEmpty(entry) == true)
+            if (!entries.Any())
             {
-                EntryInfo entryData = Contents.GetEntryData(entry, ns);
+                Console.WriteLine("No entries found in XML.");
+            }
+            else
+            {
+                var entryDataList = new List<EntryInfo>();
+
+                foreach (var entry in entries)
+                {
+                    if (Contents.CheckEntryEmpty(entry))
+                    {
+                        EntryInfo entryData = Contents.GetEntryData(entry, ns);
+                        entryDataList.Add(entryData);
+                    }
+                }
 
                 var jsonOptions = new JsonSerializerOptions
                 {
@@ -25,12 +38,11 @@ class Program
                     PropertyNamingPolicy = JsonNamingPolicy.CamelCase
                 };
 
-                string jsonString = JsonSerializer.Serialize(entryData, jsonOptions);
+                string jsonString = JsonSerializer.Serialize(entryDataList, jsonOptions);
 
-                Console.WriteLine(jsonString);
+                File.WriteAllText("../data/entries.json", jsonString);
 
-                //save to file
-                System.IO.File.WriteAllText("../data/entry.json", jsonString);
+                Console.WriteLine($"Saved {entryDataList.Count} entries to ../data/entries.json");
             }
         }
         catch (HttpRequestException e)
