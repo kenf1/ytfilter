@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct VideoEntry {
     pub video_id: String,
     pub published: String,

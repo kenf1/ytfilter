@@ -1,7 +1,7 @@
 use crate::data_layer::request;
 use crate::models::{response::feed::Feed, video_entry::VideoEntry};
 
-fn create_video_entries(feed: Feed) -> Vec<VideoEntry> {
+pub fn create_video_entries(feed: Feed) -> Vec<VideoEntry> {
     feed.entry
         .iter()
         .map(|entry| {
