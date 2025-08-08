@@ -81,4 +81,20 @@ class Contents
             }
         };
     }
+
+    public static List<EntryInfo> ExtractEntryDataList(IEnumerable<XElement> entries, (XNamespace atom, XNamespace media) ns)
+    {
+        var entryDataList = new List<EntryInfo>();
+
+        foreach (var entry in entries)
+        {
+            if (!Contents.CheckEntryEmpty(entry))
+                continue;
+
+            EntryInfo entryData = Contents.GetEntryData(entry, ns);
+            entryDataList.Add(entryData);
+        }
+
+        return entryDataList;
+    }
 }

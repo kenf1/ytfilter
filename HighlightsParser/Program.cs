@@ -1,5 +1,4 @@
-﻿using System.Text.Json;
-using System.Xml.Linq;
+﻿using System.Xml.Linq;
 
 class Program
 {
@@ -18,32 +17,12 @@ class Program
             if (!entries.Any())
             {
                 Console.WriteLine("No entries found in XML.");
+                return;
             }
-            else
-            {
-                var entryDataList = new List<EntryInfo>();
 
-                foreach (var entry in entries)
-                {
-                    if (Contents.CheckEntryEmpty(entry))
-                    {
-                        EntryInfo entryData = Contents.GetEntryData(entry, ns);
-                        entryDataList.Add(entryData);
-                    }
-                }
+            var entryDataList = Contents.ExtractEntryDataList(entries, ns);
 
-                var jsonOptions = new JsonSerializerOptions
-                {
-                    WriteIndented = true,
-                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-                };
-
-                string jsonString = JsonSerializer.Serialize(entryDataList, jsonOptions);
-
-                File.WriteAllText("../data/entries.json", jsonString);
-
-                Console.WriteLine($"Saved {entryDataList.Count} entries to ../data/entries.json");
-            }
+            JsonHelper.SaveListToJsonFile(entryDataList, "../data/entries.json");
         }
         catch (HttpRequestException e)
         {
