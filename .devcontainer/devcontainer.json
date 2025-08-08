@@ -1,0 +1,29 @@
+{
+	"name": "Existing Dockerfile",
+	"build": {
+		"context": "..",
+		"dockerfile": "../setup/Dev.dockerfile"
+	},
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"gxl.git-graph-3",
+				"formulahendry.code-runner",
+				"esbenp.prettier-vscode",
+				"ms-dotnettools.csdevkit"
+			],
+			"settings": {
+				"editor.formatOnSave": true,
+				"code-runner.runInTerminal": true,
+				"code-runner.executorMap": {
+					"csharp": "cd $dir && dotnet run $fileName"
+				},
+				"code-runner.enableAppInsights": false,
+				"chat.mcp.enabled": false,
+				"telemetry.editStats.enabled": false,
+				"telemetry.feedback.enabled": false,
+				"dotnetAcquisitionExtension.enableTelemetry": false
+			}
+		}
+	}
+}
