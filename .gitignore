@@ -292,3 +292,5 @@ __pycache__/
 .env
 .DS_Store
 Dev/
+target/
+Cargo.lock
