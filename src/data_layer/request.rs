@@ -4,7 +4,7 @@ use crate::configs::channel_setup::create_xml_url;
 use crate::models::response::feed::Feed;
 
 pub async fn request_xml(
-    channel_id: &str,
+    channel_id: String,
 ) -> Result<Feed, Box<dyn std::error::Error>> {
     let url = create_xml_url(channel_id.to_string());
 
