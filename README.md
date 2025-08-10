@@ -15,14 +15,33 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let channels: Vec<ChannelID> =
         load_channels_json("./data/channels_example.json")?;
 
-    let all_entries: Vec<VideoEntry> =
-        video_entries_wrapper(channels[0].channel_id.to_string()).await?;
-
     //query + filter
-    let queries = ["FULL MATCH".to_string()];
-    let filtered_entries: Vec<VideoEntry> =
-        filter_by_title(&all_entries, &queries).to_owned();
+    let queries = [
+        "FULL MATCH".to_string(),
+        "Top Points".to_string(),
+        "MS QF".to_string(),
+        "MS SF".to_string(),
+        "MS Final".to_string(),
+    ];
+
+    let all_filtered_entries: Vec<VideoEntry> =
+        query_wrapper(&json_path, &queries).await?;
 
     Ok(())
 }
+```
+
+Environment variables (see data/example.env)
+
+```shell
+#required
+MONGO_URI=
+MONGO_DB=
+MONGO_COLL=
+
+#required, default: "./data/channels_example.json"
+CHANNELS_JSON=
+
+#optional, default: "prod"
+STATUS=
 ```
