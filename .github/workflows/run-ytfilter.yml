@@ -27,9 +27,9 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-cargo-
 
-      - name: Run application
+      - name: Run application (release flag)
         env:
           MONGO_URI: ${{ secrets.MONGO_URI }}
           MONGO_COLL: ${{ secrets.MONGO_COLL }}
           MONGO_DB: ${{ secrets.MONGO_DB }}
-        run: cargo run
+        run: cargo run --release
