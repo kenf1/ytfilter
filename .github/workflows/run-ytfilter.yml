@@ -1,0 +1,35 @@
+name: Run ytfilter
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 * * * *"
+
+jobs:
+  run_ytfilter:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions-rust-lang/setup-rust-toolchain@v1
+        with:
+          toolchain: stable
+
+      - name: Cache Cargo packages
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-cargo-
+
+      - name: Run application
+        env:
+          MONGO_URI: ${{ secrets.MONGO_URI }}
+          MONGO_COLL: ${{ secrets.MONGO_COLL }}
+          MONGO_DB: ${{ secrets.MONGO_DB }}
+        run: cargo run

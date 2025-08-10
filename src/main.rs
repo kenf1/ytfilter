@@ -1,4 +1,5 @@
 use dotenvy::dotenv;
+use std::env;
 
 mod configs;
 mod data_layer;
@@ -17,6 +18,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let coll: mongodb::Collection<mongodb::bson::Document> =
         get_collection(&mongo_config).await?;
 
+    let status = env::var("STATUS").unwrap_or_else(|_| "prod".to_string());
+
     //query + filter
     let queries = [
         "FULL MATCH".to_string(),
@@ -31,8 +34,18 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     //write to collection
     let mongo_write_res = write_wrapper(&coll, filtered_entries).await;
     match mongo_write_res {
-        Ok(res) => println!("{res:?}"),
-        Err(e) => eprintln!("{e}"),
+        Ok(res) => {
+            if status != "prod" {
+                println!("{res:?}")
+            }
+            println!("Success")
+        }
+        Err(e) => {
+            if status != "prod" {
+                eprintln!("{e}");
+            }
+            eprintln!("Error")
+        }
     }
 
     Ok(())
