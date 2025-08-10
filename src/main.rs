@@ -19,8 +19,11 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         get_collection(&mongo_config).await?;
 
     let status = env::var("STATUS").unwrap_or_else(|_| "prod".to_string());
+    let json_path = env::var("CHANNELS_JSON")
+        .unwrap_or_else(|_| "./data/channels_example.json".to_string());
 
     //query + filter
+    //todo: read from json or txt file
     let queries = [
         "FULL MATCH".to_string(),
         "Top Points".to_string(),
@@ -28,11 +31,16 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         "MS SF".to_string(),
         "MS Final".to_string(),
     ];
-    let filtered_entries: Vec<VideoEntry> =
-        query_wrapper("./data/channels_example.json", &queries).await?;
+    let all_filtered_entries: Vec<VideoEntry> =
+        query_wrapper(&json_path, &queries).await?;
+
+    //dev debug: visual confirmation
+    if status == "dev" {
+        println!("{:#?}", &all_filtered_entries[..5])
+    }
 
     //write to collection
-    let mongo_write_res = write_wrapper(&coll, filtered_entries).await;
+    let mongo_write_res = write_wrapper(&coll, all_filtered_entries).await;
     match mongo_write_res {
         Ok(res) => {
             if status != "prod" {

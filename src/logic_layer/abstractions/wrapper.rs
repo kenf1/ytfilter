@@ -10,12 +10,15 @@ pub async fn query_wrapper(
 ) -> Result<Vec<VideoEntry>, Box<dyn std::error::Error>> {
     let channels: Vec<ChannelID> = load_channels_json(json_path)?;
 
-    //todo: find channel by name
-    let all_entries: Vec<VideoEntry> =
-        video_entries_wrapper(channels[0].channel_id.to_string()).await?;
+    let mut all_entries: Vec<VideoEntry> = Vec::new();
 
-    let filtered_entries: Vec<VideoEntry> =
-        filter_by_title(&all_entries, queries).into_iter().collect();
+    for channel in &channels {
+        let entries =
+            video_entries_wrapper(channel.channel_id.to_string()).await?;
 
-    Ok(filtered_entries)
+        let filtered = filter_by_title(&entries, queries);
+        all_entries.extend(filtered.into_iter().cloned());
+    }
+
+    Ok(all_entries)
 }
