@@ -6,7 +6,9 @@ mod data_layer;
 mod logic_layer;
 mod models;
 
-use crate::configs::db::mongo_setup::{get_collection, load_mongo_config};
+use crate::configs::db::mongo_setup::{
+    get_client_and_collection, load_mongo_config,
+};
 use crate::configs::json::load_filters_json;
 use crate::data_layer::db::mongo::write_wrapper;
 use crate::logic_layer::abstractions::wrapper::query_wrapper;
@@ -19,8 +21,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     dotenv().ok();
 
     let mongo_config: mongo_connection::MongoConfig = load_mongo_config();
-    let coll: mongodb::Collection<mongodb::bson::Document> =
-        get_collection(&mongo_config).await?;
+    let (client, coll) = get_client_and_collection(&mongo_config).await?;
 
     let status = env::var("STATUS").unwrap_or_else(|_| "prod".to_string());
 
@@ -67,6 +68,9 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             eprintln!("Error")
         }
     }
+
+    //usually not required, see: https://docs.rs/mongodb/latest/mongodb/struct.Client.html#method.shutdown
+    client.shutdown().await;
 
     Ok(())
 }

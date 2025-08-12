@@ -15,14 +15,14 @@ pub fn load_mongo_config() -> MongoConfig {
     }
 }
 
-pub async fn get_collection(
+pub async fn get_client_and_collection(
     config: &MongoConfig,
-) -> mongodb::error::Result<Collection<Document>> {
+) -> mongodb::error::Result<(Client, Collection<Document>)> {
     let client_options = ClientOptions::parse(&config.uri).await?;
     let client = Client::with_options(client_options)?;
 
     let db = client.database(&config.db_name);
     let coll = db.collection::<Document>(&config.coll_name);
 
-    Ok(coll)
+    Ok((client, coll))
 }
