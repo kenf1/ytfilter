@@ -24,15 +24,17 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     //query + filter
     //todo: read from json or txt file
-    let queries = [
+    let filter_keep = [
         "FULL MATCH".to_string(),
         "Top Points".to_string(),
         "MS QF".to_string(),
         "MS SF".to_string(),
         "MS Final".to_string(),
     ];
+    let filter_drop = ["WTT Feeder".to_string()];
+
     let all_filtered_entries: Vec<VideoEntry> =
-        query_wrapper(&json_path, &queries).await?;
+        query_wrapper(&json_path, &filter_keep, &filter_drop).await?;
 
     //dev debug: visual confirmation
     if status == "dev" {
