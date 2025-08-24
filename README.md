@@ -16,16 +16,17 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         load_channels_json("./data/channels_example.json")?;
 
     //query + filter
-    let queries = [
+    let filter_keep = [
         "FULL MATCH".to_string(),
         "Top Points".to_string(),
         "MS QF".to_string(),
         "MS SF".to_string(),
         "MS Final".to_string(),
     ];
+    let filter_drop = ["WTT Feeder".to_string()];
 
     let all_filtered_entries: Vec<VideoEntry> =
-        query_wrapper(&json_path, &queries).await?;
+        query_wrapper(&json_path, &filter_keep, &filter_drop).await?;
 
     Ok(())
 }
@@ -41,6 +42,9 @@ MONGO_COLL=
 
 #required, default: "./data/channels_example.json"
 CHANNELS_JSON=
+
+#required, default: "./data/filters_example.json"
+FILTERS_JSON=
 
 #optional, default: "prod"
 STATUS=
