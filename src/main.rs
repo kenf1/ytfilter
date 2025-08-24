@@ -13,12 +13,15 @@ use crate::models::{db::mongo_connection, video_entry::VideoEntry};
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    //setup configs
     dotenv().ok();
     let mongo_config: mongo_connection::MongoConfig = load_mongo_config();
     let coll: mongodb::Collection<mongodb::bson::Document> =
         get_collection(&mongo_config).await?;
 
     let status = env::var("STATUS").unwrap_or_else(|_| "prod".to_string());
+
+    //overwrite default by passing env var (see setup/example.env for template)
     let json_path = env::var("CHANNELS_JSON")
         .unwrap_or_else(|_| "./data/channels_example.json".to_string());
 
@@ -45,13 +48,13 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let mongo_write_res = write_wrapper(&coll, all_filtered_entries).await;
     match mongo_write_res {
         Ok(res) => {
-            if status != "prod" {
+            if status == "dev" {
                 println!("{res:?}")
             }
             println!("Success")
         }
         Err(e) => {
-            if status != "prod" {
+            if status == "dev" {
                 eprintln!("{e}");
             }
             eprintln!("Error")
