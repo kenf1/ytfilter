@@ -1,2 +1,3 @@
 *.json
 !channels_example.json
+!filters_example.json

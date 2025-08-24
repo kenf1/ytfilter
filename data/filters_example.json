@@ -1,0 +1,12 @@
+{
+    "keep": [
+        "FULL MATCH",
+        "Top Points",
+        "MS QF",
+        "MS SF",
+        "MS Final"
+    ],
+    "drop": [
+        "WTT Feeder"
+    ]
+}
