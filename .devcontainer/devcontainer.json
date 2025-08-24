@@ -2,7 +2,7 @@
 	"name": "Existing Dockerfile",
 	"build": {
 		"context": "..",
-		"dockerfile": "../setup/Dev.dockerfile"
+		"dockerfile": "./Dev.dockerfile"
 	},
 	"customizations": {
 		"vscode": {
