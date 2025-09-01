@@ -10,12 +10,14 @@ use crate::configs::db::mongo_setup::{get_collection, load_mongo_config};
 use crate::configs::json::load_filters_json;
 use crate::data_layer::db::mongo::write_wrapper;
 use crate::logic_layer::abstractions::wrapper::query_wrapper;
-use crate::models::{db::mongo_connection, video_entry::VideoEntry};
+use crate::models::{
+    db::mongo_connection, filters::Filters, video_entry::VideoEntry,
+};
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    //setup configs
     dotenv().ok();
+
     let mongo_config: mongo_connection::MongoConfig = load_mongo_config();
     let coll: mongodb::Collection<mongodb::bson::Document> =
         get_collection(&mongo_config).await?;
@@ -29,7 +31,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         .unwrap_or_else(|_| "./data/filters_example.json".to_string());
 
     //query + filter
-    let all_filters = load_filters_json(&filters_json_path)?;
+    let all_filters: Filters = load_filters_json(&filters_json_path)?;
     let all_filtered_entries: Vec<VideoEntry> = query_wrapper(
         &channels_json_path,
         &all_filters.keep,
@@ -37,9 +39,16 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     )
     .await?;
 
+    //skip db if no new entries
+    if all_filtered_entries.is_empty() {
+        return Ok(());
+    }
+
     //dev debug: visual confirmation
-    if status == "dev" {
-        println!("{:#?}", &all_filtered_entries[..5])
+    if status == "dev" && all_filtered_entries.len() >= 5 {
+        println!("{:#?}", &all_filtered_entries[..5]);
+    } else {
+        println!("{:#?}", &all_filtered_entries[0]);
     }
 
     //write to collection
