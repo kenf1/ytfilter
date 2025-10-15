@@ -8,7 +8,8 @@ pub async fn query_wrapper(
     json_path: &str,
     filter_keep: &[String],
     filter_drop: &[String],
-) -> Result<Vec<VideoEntry>, Box<dyn std::error::Error>> {
+) -> Result<Vec<VideoEntry>, Box<dyn std::error::Error + Send + Sync + 'static>>
+{
     let channels: Vec<ChannelID> = load_channels_json(json_path)?;
 
     let mut all_entries: Vec<VideoEntry> = Vec::new();
