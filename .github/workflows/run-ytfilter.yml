@@ -32,4 +32,5 @@ jobs:
           MONGO_URI: ${{ secrets.MONGO_URI }}
           MONGO_COLL: ${{ secrets.MONGO_COLL }}
           MONGO_DB: ${{ secrets.MONGO_DB }}
+          OPENTELEMETRY_DSN: ${{ secrets.OPENTELEMETRY_DSN }}
         run: cargo run --release

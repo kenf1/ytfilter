@@ -9,13 +9,13 @@ updates:
     directory: "/"
     schedule:
       interval: "monthly"
-      ignore:
-        - dependency-name: "tonic" #v0.13.1 causes breaking changes
-        - dependency-name: "opentelemetry"
-        - dependency-name: "opentelemetry_sdk"
-        - dependency-name: "opentelemetry-otlp"
-        - dependency-name: "opentelemetry-resource-detectors"
-        - dependency-name: "opentelemetry-appender-tracing"
+    ignore:
+      - dependency-name: "tonic" #v0.13.1 causes breaking changes
+      - dependency-name: "opentelemetry"
+      - dependency-name: "opentelemetry_sdk"
+      - dependency-name: "opentelemetry-otlp"
+      - dependency-name: "opentelemetry-resource-detectors"
+      - dependency-name: "opentelemetry-appender-tracing"
 
   # - package-ecosystem: "nuget"
   #   directory: "/"
