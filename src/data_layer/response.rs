@@ -28,7 +28,8 @@ pub fn create_video_entries(feed: Feed) -> Vec<VideoEntry> {
 
 pub async fn video_entries_wrapper(
     channel_id: String,
-) -> Result<Vec<VideoEntry>, Box<dyn std::error::Error>> {
+) -> Result<Vec<VideoEntry>, Box<dyn std::error::Error + Send + Sync + 'static>>
+{
     let feed: Feed = request::request_xml(channel_id).await?;
     let video_entries: Vec<VideoEntry> = create_video_entries(feed);
 
