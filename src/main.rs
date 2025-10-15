@@ -30,6 +30,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error + Send + Sync + 'static>
     let dsn = std::env::var("OPENTELEMETRY_DSN")
         .expect("Error: OPENTELEMETRY_DSN not found");
     let provider = init_logger_provider(dsn)?;
+
     let filter_otel = EnvFilter::new("info")
         .add_directive("hyper=off".parse().unwrap())
         .add_directive("tonic=off".parse().unwrap())
@@ -70,7 +71,12 @@ async fn main() -> Result<(), Box<dyn std::error::Error + Send + Sync + 'static>
 
     //skip db if no new entries
     if all_filtered_entries.is_empty() {
-        tracing::info!("No new entries");
+        tracing::debug!("No new entries");
+
+        //must repeat for early-return
+        provider.force_flush()?;
+        provider.shutdown()?;
+
         return Ok(());
     }
 
@@ -88,13 +94,13 @@ async fn main() -> Result<(), Box<dyn std::error::Error + Send + Sync + 'static>
             if status == "dev" {
                 println!("{res:?}")
             }
-            tracing::info!("Success");
+            tracing::debug!("Success");
         }
         Err(e) => {
             if status == "dev" {
                 eprintln!("{e}");
             }
-            tracing::error!("Error")
+            tracing::error!("Error writing to mongodb")
         }
     }
 
