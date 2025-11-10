@@ -12,7 +12,7 @@ Prototype in C# [HighlightsParser](https://github.com/kenf1/ytfilter/tree/main/H
 cargo add --git https://github.com/kenf1/ytfilter
 ```
 
-### Example
+### Minimal Example
 
 ```rust
 #[tokio::main]

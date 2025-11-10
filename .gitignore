@@ -289,7 +289,7 @@ __pycache__/
 *.xsd.cs
 
 #Misc
-.env
+*.env
 .DS_Store
 Dev/
 target/
